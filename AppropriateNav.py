@@ -2,7 +2,7 @@ import urllib.parse
 import requests
 import PySimpleGUI as sg
 
-
+#you may need to run the command "python3 -m pip install PySimpleGUI" in order tro run this program
 
 sg.theme('DarkBrown4')   # Add a touch of color
 #home GUI
@@ -29,32 +29,39 @@ def nav():
 
 #main GUI program
 while True:
+    #creates GUI
     window = Home()
+    #detects user interaction
     event, values = window.read()
+    #closes program
     if event == 'Close' or event == sg.WIN_CLOSED:
         break
+    #begins navigation page
     if event == "Navigate":
         window.close()
         window = nav()
         true = True
         while true == True:
-            event, values = window.read()
             
+            event, values = window.read()
+            #closes window
             if event == 'Back' or event == sg.WIN_CLOSED:
                 window.close()
                 true = False
+            #does Mapquest_parse-json_7's fuction
             if event == 'Route':
                 route = True
                 start = values[0]
                 dest = values[1]
                 main_api = "https://www.mapquestapi.com/directions/v2/route?"
                 key = "efB9HJE5qFfoI6xGr5xqkDmnDAb0oCOe"
-                #main loop
+                
                 while route == True:
                     url = main_api + urllib.parse.urlencode({"key":key, "from":start, "to":dest})
 
-                    #retrieve url
+                    
                     json_data = requests.get(url).json()
+                    #ends loop
                     route = False
 #ive made it up to the point of implimenting the original program, none of the data is parsed but the URL integer works like normal so programming should work as if you were in the original file.            
                     
