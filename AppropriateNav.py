@@ -4,7 +4,38 @@ import PySimpleGUI as sg
 
 #you may need to run the command "python3 -m pip install PySimpleGUI" in order tro run this program
 
-sg.theme('DarkBrown4')   # Add a touch of color
+
+
+
+
+""" how to Create GUI's
+1. copy this template and add/remove as needed
+def guiname():
+    layout = [  [sg.Text('this line will allow users to input values'), sg.InputText()],
+                [sg.Text('some text')],
+                [sg.Text('some text')],
+                [sg.Button('button name'), sg.Button('button name')]]
+    return sg.Window('name your window', layout)
+
+2. create your window using the following code
+
+window = guiname()
+
+this will open the window you created in the def block
+the whole layout is modular you can add some of the text lines or make more button lines, if you get stuck feel free to ask for help or google it.
+other useful code:
+
+window.close()                 <- this closes the current window
+event, values = window.read()  <- allows your buttons to work as well as store input from users
+varName = values[0]            <- this will store the user's input from the first sg.InputText() box incriment the 0 for more than one box eg(values[1] will be used for the second sg.InputText() box)
+if event == 'button name':     <- this lets the program respond to button press
+sg.theme('DarkBrown4')         <- changes the color of the GUI
+
+sg.theme_previewer()           <-throw this code into the program to get a window displaying all the themes
+"""
+
+
+sg.theme('DarkBrown4')
 #home GUI
 def Home():
     layout = [  [sg.Text('Welcome to Appropriate navigation')],
