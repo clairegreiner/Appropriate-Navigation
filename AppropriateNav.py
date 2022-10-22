@@ -76,7 +76,7 @@ def map():
     layout = [[ sg.Column(imgViewer)],
               [sg.Button('Close')]] 
     return sg.Window('Appropriate Navigation', layout)
-
+trigger = False
 #used to ensure map data exists
 mapcondition = False
 #creates GUI
@@ -98,7 +98,12 @@ while True:
         true = True
         while true == True:
             event, values = window.read()
-            if event == 'Back' or event == sg.WIN_CLOSED:
+            if event == 'Back':
+                window.close()
+                window = Home()
+                true = False
+            if event == sg.WIN_CLOSED:
+                trigger = True
                 window.close()
                 window = Home()
                 true = False
@@ -146,6 +151,8 @@ while True:
         else:
             #scrapes map_url from the internet and displays the image as a PNG inside of the GUI
             window.close()
+            if trigger == True:
+                map_url = "https://i.kym-cdn.com/editorials/icons/original/000/004/374/9e5.jpeg"
             jpg_data = (
                 cloudscraper.create_scraper(browser={"browser": "firefox", "platform": "windows", "mobile": False}).get(map_url).content)
             #takes the scrape and converts it into a png with the nessicary data for displaying
@@ -165,6 +172,7 @@ while True:
                     window.close()
                     window = Home()
                     true = False
+                    trigger = False
 
 
 
