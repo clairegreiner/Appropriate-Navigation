@@ -128,13 +128,10 @@ while True:
                     url = main_api + urllib.parse.urlencode({"key":key, "from":start, "to":dest})
                     window['-TEXT-'].update("Route Saved. You may now view the map")
                     window['-url-'].update(url)
-                    #Patrick Smith's Static Map API
                     mapcondition = True
                     
                     json_data = requests.get(url).json()
                     map_api = "https://www.mapquestapi.com/staticmap/v5/map?"
-                    size = "@2x"
-                    Type = "map" 
                     size = "@2x"
                     Type = "map"
                     traffic = "flow|con|inc"
