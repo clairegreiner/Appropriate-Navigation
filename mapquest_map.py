@@ -26,8 +26,6 @@ while True:
 
     size = "@2x" #map size
     Type = "hyb" #this will determine the type of map displayed; map, hyb, sat, light, darkwhile True:
-    size = "@2x"
-    Type = "hyb"
     traffic = "flow|con|inc"
     map_url = map_api + urllib.parse.urlencode({"key":key, "start":orig, "end":dest, "size":size, "type":Type, "traffic":traffic})
         #map url format can be adjusted to display other values, orig and dest pulled from ln 11&14
