@@ -45,8 +45,20 @@ def Home():
                 [sg.Text('               What would you like to do?')],
                 [sg.Text("", key='-CONDITION-')],
                 [sg.Text("")],
+                [sg.Text('                       '), sg.Button('How To Use', key='-tutorial-')],
                 [sg.Text('')],
                 [sg.Button('Navigate'), sg.Text("           "), sg.Button('Map'), sg.Text("            "), sg.Button('Close')]]
+    return sg.Window('Appropriate Navigation', layout)
+
+def Tutorial():
+    layout = [  [sg.Text('Welcome to Appropriate navigation Tutorial\n')],
+                [sg.Text("1. press the 'Navigate' button")],
+                [sg.Text("2. Enter your starting location and where you're going.")],
+                [sg.Text("3. Press the 'Route' button to save that data")],
+                [sg.Text("(Optional) Copy the information that appears in 'URL' \nand enter it into a browser to view the route data")],
+                [sg.Text("4. Go back to the main menu by pressing 'Back'")],
+                [sg.Text("5. Press 'Map' to view the overview of your Route")],
+                [sg.Button('Back')]]
     return sg.Window('Appropriate Navigation', layout)
 
 #Navigation GUI
@@ -56,6 +68,7 @@ def nav():
             [sg.Text("")],
             [sg.Text('Where are you coming from?'), sg.InputText()],
             [sg.Text('Where are you going?          '), sg.InputText()],
+            [sg.Text('URL:                                  '), sg.InputText(key='-url-')],            
             [sg.Button('Route'), sg.Text("    "), sg.Button('Back')]]
     return sg.Window('Appropriate Navigation', layout)
 #static map GUI
@@ -78,13 +91,25 @@ while True:
     #closes program
     if event == 'Close' or event == sg.WIN_CLOSED:
         break
+    #opens tutorial
+    if event == '-tutorial-':
+        window.close()
+        window = Tutorial()
+        true = True
+        while true == True:
+            event, values = window.read()
+            if event == 'Back' or event == sg.WIN_CLOSED:
+                window.close()
+                window = Home()
+                true = False
+            
     #begins navigation page
     if event == "Navigate":
         window.close()
         window = nav()
         true = True
         while true == True:
-            
+
             event, values = window.read()
             #closes window
             if event == 'Back' or event == sg.WIN_CLOSED:
@@ -102,6 +127,7 @@ while True:
                 while route == True:
                     url = main_api + urllib.parse.urlencode({"key":key, "from":start, "to":dest})
                     window['-TEXT-'].update("Route Saved. You may now view the map")
+                    window['-url-'].update(url)
                     #Patrick Smith's Static Map API
                     mapcondition = True
                     
