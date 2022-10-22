@@ -1,8 +1,12 @@
 import urllib.parse
 import requests
 import PySimpleGUI as sg
+import cloudscraper
+import io
+import os
+from PIL import Image
 
-#you may need to run the command "python3 -m pip install PySimpleGUI" in order tro run this program
+#you may need to run the command "python3 -m pip install PySimpleGUI", "python3 -m pip install cloudscraper" and "python3 -m pip install image" to run this code
 
 
 
@@ -35,35 +39,42 @@ sg.theme_previewer()           <-throw this code into the program to get a windo
 """
 
 
-sg.theme('DarkBrown4')
+sg.theme('Dark2')
 #home GUI
 def Home():
-    layout = [  [sg.Text('Welcome to Appropriate navigation')],
+    layout = [  [sg.Text('         Welcome to Appropriate navigation')],
+                [sg.Text('               What would you like to do?')],
+                [sg.Text("", key='-CONDITION-')],
                 [sg.Text("")],
-                [sg.Text('     What would you like to do?')],
-                [sg.Button('Navigate'), sg.Text("                     "), sg.Button('Close')]]
+                [sg.Text('')],
+                [sg.Button('Navigate'), sg.Text("           "), sg.Button('Map'), sg.Text("            "), sg.Button('Close')]]
     return sg.Window('Appropriate Navigation', layout)
 
 #Navigation GUI
 def nav():
-    layout = [  [sg.Text('                           Welcome to navigation')],
-            #[sg.Button("", key='-TEXT-', enable_events= True)],  
+    layout = [  [sg.Text('                                   Welcome to navigation')],
+            [sg.Text("", key='-TEXT-')],  
             [sg.Text("")],
             [sg.Text('Where are you coming from?'), sg.InputText()],
             [sg.Text('Where are you going?          '), sg.InputText()],
             [sg.Button('Route'), sg.Text("    "), sg.Button('Back')]]
     return sg.Window('Appropriate Navigation', layout)
 
+def map():
+    layout = [[ sg.Column(imgViewer)],
+              [sg.Button('Close')]] 
+    return sg.Window('Appropriate Navigation', layout)
 
 
-
-
+mapcondition = False
+window = Home()
 #main GUI program
 while True:
     #creates GUI
-    window = Home()
+    
     #detects user interaction
     event, values = window.read()
+    
     #closes program
     if event == 'Close' or event == sg.WIN_CLOSED:
         break
@@ -78,6 +89,7 @@ while True:
             #closes window
             if event == 'Back' or event == sg.WIN_CLOSED:
                 window.close()
+                window = Home()
                 true = False
             #does Mapquest_parse-json_7's fuction
             if event == 'Route':
@@ -89,14 +101,56 @@ while True:
                 
                 while route == True:
                     url = main_api + urllib.parse.urlencode({"key":key, "from":start, "to":dest})
-
+                    window['-TEXT-'].update("Route Saved. You may now view the map")
+                    mapcondition = True
                     
                     json_data = requests.get(url).json()
+                    map_api = "https://www.mapquestapi.com/staticmap/v5/map?"
+                    size = "@2x" #map size
+                    Type = "map" #this will determine the type of map displayed; map, hyb, sat, light, darkwhile True:
+                    size = "@2x"
+                    Type = "map"
+                    traffic = "flow|con|inc"
+                    map_url = map_api + urllib.parse.urlencode({"key":key, "start":start, "end":dest, "size":size, "type":Type, "traffic":traffic})
                     #ends loop
                     route = False
+    if event == 'Map':
+        if mapcondition == False:
+        
+            window['-CONDITION-'].update("No map data stored, please use 'Navigate' first.")
+            
+        else:
+            
+            window.close()
+            jpg_data = (
+                cloudscraper.create_scraper(browser={"browser": "firefox", "platform": "windows", "mobile": False}).get(map_url).content)
+
+            pil_image = Image.open(io.BytesIO(jpg_data))
+            png_bio = io.BytesIO()
+            pil_image.save(png_bio, format="PNG")
+            png_data = png_bio.getvalue()
+
+            imgViewer = [
+                [sg.Image(data=png_data)]]
+            true = True
+            window = map()
+            while true == True:
+                event, values = window.read()
+            
+                if event == 'Close'or event == sg.WIN_CLOSED:
+                    window.close()
+                    window = Home()
+                    true = False
+            
+        
 #ive made it up to the point of implimenting the original program, none of the data is parsed but the URL integer works like normal so programming should work as if you were in the original file.            
                     
-    
+#url = "https://upload.wikimedia.org/wikipedia/commons/d/d9/Test.png"
+#response = requests.get(url, stream=True)
+#response.raw.decode_content = True
+# img = ImageQt.Image.open(response.raw)
+# data = image_to_data(img)
+#img_box = sg.Image(data=response.raw.read())    
       
 
 
