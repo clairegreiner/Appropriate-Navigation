@@ -1,4 +1,5 @@
 import urllib.parse
+import webbrowser
 import requests
 
 main_api = "https://www.mapquestapi.com/directions/v2/route?"
@@ -15,10 +16,7 @@ while True:
     if dest == "quit" or dest == "q":
         break
     url = main_api + urllib.parse.urlencode({"key":key, "from":orig, "to":dest})
-    #map_url = map_api + urllib.parse.urlencode({"key":key, "start":orig, "end":dest, "size":size, "type":Type, "traffic":traffic})
-    #map_url is a place holder for testing reasons, can be removed at a later time 20221019 1128am
     print("URL: " + (url))
-    #print("Map: " + (map_url));place holder for testing reasons, can be removed at a later time 20221019 1128am
     json_data = requests.get(url).json()
     json_data = requests.get(url).json()
     json_status = json_data["info"]["statuscode"]
@@ -31,6 +29,8 @@ while True:
         #map url format can be adjusted to display other values, orig and dest pulled from ln 11&14
     print("Map: " + (map_url))
     #this while true is used to set the parameters and display the map
+    get_url = webbrowser.open(map_url) #this line is used to auto open the URL for the map
+   
 
     if json_status == 0:
       print("API Staus: " + str(json_status) + " = A successful route call.\n")
