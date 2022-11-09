@@ -166,29 +166,14 @@ while True:
             
         else:
             #scrapes map_url from the internet and displays the image as a PNG inside of the GUI
-            window.close()
-            if trigger == True:
-                map_url = "https://i.kym-cdn.com/editorials/icons/original/000/004/374/9e5.jpeg"
-            jpg_data = (
-                cloudscraper.create_scraper(browser={"browser": "firefox", "platform": "windows", "mobile": False}).get(map_url).content)
-            #takes the scrape and converts it into a png with the nessicary data for displaying
-            pil_image = Image.open(io.BytesIO(jpg_data))
-            png_bio = io.BytesIO()
-            pil_image.save(png_bio, format="PNG")
-            png_data = png_bio.getvalue()
-            #takes the PNG data conversion above and converts it into a layout for pysimplegui
-            imgViewer = [
-                [sg.Image(data=png_data)]]
-            true = True
-            window = map()
-            while true == True:
-                event, values = window.read()
+            #this while true is used to set the parameters and display the map
+            get_url = webbrowser.open(map_url) #this line is used to auto open the URL for the map
             
-                if event == 'Close'or event == sg.WIN_CLOSED:
-                    window.close()
-                    window = Home()
-                    true = False
-                    trigger = False
+    if event == 'Close'or event == sg.WIN_CLOSED:
+        window.close()
+        window = Home()
+        true = False
+        trigger = False
 
 
 
