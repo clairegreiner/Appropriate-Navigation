@@ -4,6 +4,7 @@ import PySimpleGUI as sg
 import cloudscraper
 import io
 from PIL import Image
+import webbrowser
 
 #you may need to run the command "python3 -m pip install PySimpleGUI", "python3 -m pip install cloudscraper" and "python3 -m pip install image" to run this code
 
@@ -37,6 +38,9 @@ sg.theme('DarkBrown4')         <- changes the color of the GUI
 sg.theme_previewer()           <-throw this code into the program to get a window displaying all the themes
 """
 
+#Keys
+MQkey = "efB9HJE5qFfoI6xGr5xqkDmnDAb0oCOe"
+GOVkey = "bBOUe9tgtqpB8GKogYA1xhpjlb6G37UgAF6DNNsG"
 
 sg.theme('Dark2')
 #home GUI
@@ -76,6 +80,8 @@ def map():
     layout = [[ sg.Column(imgViewer)],
               [sg.Button('Close')]] 
     return sg.Window('Appropriate Navigation', layout)
+
+
 trigger = False
 #used to ensure map data exists
 mapcondition = False
@@ -127,21 +133,31 @@ while True:
                 start = values[0]
                 dest = values[1]
                 main_api = "https://www.mapquestapi.com/directions/v2/route?"
-                key = "efB9HJE5qFfoI6xGr5xqkDmnDAb0oCOe"
+                
                 
                 while route == True:
-                    url = main_api + urllib.parse.urlencode({"key":key, "from":start, "to":dest})
-                    window['-TEXT-'].update("Route Saved. You may now view the map")
-                    window['-url-'].update(url)
-                    mapcondition = True
+                    url = main_api + urllib.parse.urlencode({"key":MQkey, "from":start, "to":dest})
                     
                     json_data = requests.get(url).json()
+                    json_status = json_data["info"]["statuscode"]
                     map_api = "https://www.mapquestapi.com/staticmap/v5/map?"
                     size = "@2x"
                     Type = "map"
                     traffic = "flow|con|inc"
-                    map_url = map_api + urllib.parse.urlencode({"key":key, "start":start, "end":dest, "size":size, "type":Type, "traffic":traffic})
+                    map_url = map_api + urllib.parse.urlencode({"key":MQkey, "start":start, "end":dest, "size":size, "type":Type, "traffic":traffic})
                     #ends loop
+                    if json_status == 0:
+                        window['-TEXT-'].update("Route Saved. You may now view the map")
+                        window['-url-'].update(url)
+                        mapcondition = True
+                    elif json_status == 402 or json_status == 611:
+                        window['-TEXT-'].update("There was an error with one or more of your locations and the route could not be established\nPlease check them and try again")
+                        mapcondition = False
+                    else:
+                        window['-TEXT-'].update("You dun broke it, I dont even know what you did but it dont work no more.\nPlease check your entries, internet and possibly physical well being and try again.")
+                        mapcondition = False
+                    
+                    
                     route = False
     if event == 'Map':
         if mapcondition == False:
